@@ -11,6 +11,10 @@
       <!-- show logout when authenticated -->
       <button v-if="$auth.isAuthenticated" @click="logout">Log out</button>
     </div>
+    <div v-if="$auth.isAuthenticated">
+      <button @click="getTheToken">getToken</button>
+      <p>the value is {{ test }}</p>
+    </div>
   </div>
 </template>
 
@@ -20,10 +24,20 @@ import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "Home",
+  data() {
+    return {
+      test: "nothing",
+    };
+  },
   components: {
     HelloWorld,
   },
   methods: {
+    async getTheToken() {
+      const token = await this.$auth.getTokenSilently();
+      localStorage.setItem("apollon-token", token);
+      this.test = token;
+    },
     // Log the user in
     login() {
       this.$auth.loginWithRedirect();

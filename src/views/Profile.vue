@@ -2,7 +2,7 @@
   <div>
     <div>
       <img :src="$auth.user.picture" />
-      <h2>{{ $auth.user.name }}</h2>
+      <h2>{{ $auth.user.nickname }}</h2>
       <p>{{ $auth.user.email }}</p>
     </div>
 
