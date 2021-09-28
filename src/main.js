@@ -6,6 +6,7 @@ import "bulmaswatch/flatly/bulmaswatch.min.css";
 import router from "./router";
 import { domain, clientId, audience } from "../auth_config.json";
 import { Auth0Plugin } from "./auth";
+import { createProvider } from "./vue-apollo";
 
 Vue.config.productionTip = false;
 
@@ -30,5 +31,6 @@ Vue.use(Buefy, {
 
 new Vue({
   router,
+  apolloProvider: createProvider(),
   render: (h) => h(App),
 }).$mount("#app");

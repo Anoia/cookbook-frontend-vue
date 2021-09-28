@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+
+    <h3>ingredient test</h3>
+    <div v-for="i in ingredients" :key="i.id">{{ i.id }}. {{ i.name }}</div>
 
     <!-- Check that the SDK client is not currently loading before accessing is methods -->
     <div v-if="!$auth.loading">
@@ -19,8 +21,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import gql from "graphql-tag";
 
 export default {
   name: "Home",
@@ -28,9 +29,6 @@ export default {
     return {
       test: "nothing",
     };
-  },
-  components: {
-    HelloWorld,
   },
   methods: {
     async getTheToken() {
@@ -48,6 +46,17 @@ export default {
         returnTo: window.location.origin,
       });
     },
+  },
+  apollo: {
+    // Simple query that will update the 'ingredients' vue property
+    ingredients: gql`
+      query {
+        ingredients {
+          name
+          id
+        }
+      }
+    `,
   },
 };
 </script>
