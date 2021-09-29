@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="../assets/logo.png" />
 
     <h3>ingredient test</h3>
-    <div v-for="i in ingredients" :key="i.id">{{ i.id }}. {{ i.name }}</div>
+    <div v-for="i in ingredients" :key="i.id">{{ i.id }} - {{ i.name }}</div>
 
     <!-- Check that the SDK client is not currently loading before accessing is methods -->
     <div v-if="!$auth.loading">
@@ -22,6 +22,7 @@
 
 <script>
 import gql from "graphql-tag";
+import { onLogin, onLogout } from "../vue-apollo";
 
 export default {
   name: "Home",
@@ -33,7 +34,7 @@ export default {
   methods: {
     async getTheToken() {
       const token = await this.$auth.getTokenSilently();
-      localStorage.setItem("apollon-token", token);
+      //  localStorage.setItem("apollon-token", token);
       this.test = token;
     },
     // Log the user in
@@ -42,6 +43,7 @@ export default {
     },
     // Log the user out
     logout() {
+      onLogout(this.$apolloProvider.defaultClient);
       this.$auth.logout({
         returnTo: window.location.origin,
       });
@@ -57,6 +59,16 @@ export default {
         }
       }
     `,
+  },
+  mounted: function () {
+    this.$auth.$watch("isAuthenticated", async (authenticated) => {
+      if (authenticated === true) {
+        onLogin(
+          this.$apolloProvider.defaultClient,
+          await this.$auth.getTokenSilently()
+        );
+      }
+    });
   },
 };
 </script>

@@ -14,6 +14,7 @@ Vue.use(Auth0Plugin, {
   domain,
   clientId,
   audience,
+  cacheLocation: "localstorage",
   onRedirectCallback: (appState) => {
     router.push(
       appState && appState.targetUrl
