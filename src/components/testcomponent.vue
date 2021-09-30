@@ -7,7 +7,7 @@
         v-model="name"
         :data="filteredDataArray"
         placeholder="e.g. jQuery"
-        icon="magnify"
+        icon="fas fa-pen"
         clearable
         @select="(option) => (selected = option)"
       >

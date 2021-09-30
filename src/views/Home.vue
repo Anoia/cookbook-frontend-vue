@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <ingredient-selector></ingredient-selector>
+
     <img alt="Vue logo" src="../assets/logo.png" />
 
     <h3>ingredient test</h3>
@@ -23,8 +25,10 @@
 <script>
 import gql from "graphql-tag";
 import { onLogin, onLogout } from "../vue-apollo";
+import IngredientSelector from "../components/IngredientSelector.vue";
 
 export default {
+  components: { IngredientSelector },
   name: "Home",
   data() {
     return {
