@@ -5,7 +5,7 @@
     <div class="columns level">
       <div class="column level-item">
         <b-field label="Title">
-          <b-input placeholder="test"></b-input>
+          <b-input placeholder="e.g. Lasagna"></b-input>
         </b-field>
 
         <b-field label="Decription">
@@ -42,12 +42,25 @@
       >
         <span class="level">
           <span class="level-left">
+            <b-numberinput
+              v-bind:style="{ marginBottom: 0, width: '10em' }"
+              class="level-item"
+              controls-position="compact"
+              controls-alignment="left"
+              min="0"
+              native-size="10"
+              v-model="ingredient.amount"
+            ></b-numberinput>
+
             <span class="level-item">{{ ingredient.name }}</span>
           </span>
           <span class="level-right">
             <span class="level-item">
-              <span class="panel-icon">
-                <i class="fas fa-pen" aria-hidden="true"></i>
+              <span
+                class="panel-icon"
+                v-on:click="removeIngredient(ingredient)"
+              >
+                <i class="fas fa-times" aria-hidden="true"></i>
               </span>
             </span>
           </span>
@@ -55,7 +68,9 @@
       </a>
 
       <div class="panel-block">
-        <ingredient-selector v-bind:selectFunction="test"></ingredient-selector>
+        <ingredient-selector
+          v-bind:selectFunction="addNewIngredient"
+        ></ingredient-selector>
       </div>
     </nav>
 
@@ -79,9 +94,15 @@ export default {
     };
   },
   methods: {
-    test(o) {
-      if (o && !this.ingredients.includes(o)) {
-        this.ingredients.push(o);
+    addNewIngredient(i) {
+      if (i && !this.ingredients.includes(i)) {
+        i.amount = 1;
+        this.ingredients.push(i);
+      }
+    },
+    removeIngredient(i) {
+      if (i && this.ingredients.includes(i)) {
+        this.ingredients.splice(this.ingredients.indexOf(i), 1);
       }
     },
   },

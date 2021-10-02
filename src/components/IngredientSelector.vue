@@ -7,7 +7,7 @@
       :data="filteredDataArray"
       field="name"
       placeholder="e.g. Zuccini"
-      icon="fas fa-pen"
+      icon="fas fa-cart-plus"
       clearable
       clear-on-select
       keep-first
