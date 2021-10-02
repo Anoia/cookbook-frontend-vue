@@ -55,13 +55,7 @@
       </a>
 
       <div class="panel-block">
-        <b-field>
-          <b-input
-            placeholder="Add new ingredient"
-            v-model="newIngredient"
-            @keyup.native.enter="addIngredient"
-          ></b-input>
-        </b-field>
+        <ingredient-selector v-bind:selectFunction="test"></ingredient-selector>
       </div>
     </nav>
 
@@ -70,7 +64,9 @@
 </template>
 
 <script>
+import IngredientSelector from "../components/IngredientSelector.vue";
 export default {
+  components: { IngredientSelector },
   name: "RecipeCreate",
   data() {
     return {
@@ -83,16 +79,10 @@ export default {
     };
   },
   methods: {
-    addIngredient() {
-      var value = this.newIngredient && this.newIngredient.trim();
-      if (!value) {
-        return;
+    test(o) {
+      if (o && !this.ingredients.includes(o)) {
+        this.ingredients.push(o);
       }
-      this.ingredients.push({
-        name: value,
-        id: this.nextIngredientId++,
-      });
-      this.newIngredient = "";
     },
   },
 };

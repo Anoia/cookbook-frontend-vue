@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <ingredient-selector></ingredient-selector>
+    <ingredient-selector
+      v-bind:selectFunction="(option) => (selected = option)"
+    ></ingredient-selector>
 
+    <p>THE NEW ONE {{ selected }}</p>
     <img alt="Vue logo" src="../assets/logo.png" />
 
     <h3>ingredient test</h3>
@@ -33,6 +36,7 @@ export default {
   data() {
     return {
       test: "nothing",
+      selected: null,
     };
   },
   methods: {

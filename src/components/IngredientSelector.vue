@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p class="content"><b>Selected:</b> {{ selected }}</p>
-    <p>{{ ingredients }}</p>
     <b-autocomplete
       rounded
       v-model="name"
@@ -11,10 +9,12 @@
       placeholder="e.g. Zuccini"
       icon="fas fa-pen"
       clearable
-      @select="(option) => (selected = option)"
+      clear-on-select
+      keep-first
+      @select="onSelect"
     >
       <template #footer>
-        <a @click="showAddFruit">
+        <a @click="showAddIngredient">
           <span v-if="showAddNew"> Add new... </span>
         </a>
       </template>
@@ -35,11 +35,13 @@ const ADD_INGREDIENT = gql`
 `;
 export default {
   name: "IngredientSelector",
+  props: {
+    selectFunction: Function,
+  },
   data() {
     return {
       ingredients: [],
       name: "",
-      selected: null,
     };
   },
   computed: {
@@ -58,9 +60,13 @@ export default {
     },
   },
   methods: {
-    showAddFruit() {
+    onSelect(s) {
+      this.selectFunction(s);
+      this.name = "";
+    },
+    showAddIngredient() {
       this.$buefy.dialog.prompt({
-        message: `Ingredient`,
+        title: "New Ingredient",
         inputAttrs: {
           placeholder: "e.g. Watermelon",
           maxlength: 20,
@@ -79,6 +85,7 @@ export default {
         variables: {
           name: ingredientName,
         },
+        refetchQueries: ["get_ingredients"],
         update: (cache, { data: { insert_ingredients_one } }) => {
           // Read the data from our cache for this query.
 
@@ -93,19 +100,13 @@ export default {
     // Simple query that will update the 'ingredients' vue property
     ingredients: {
       query: gql`
-        query get_ingredients($_ilike: String) {
-          ingredients(where: { name: { _ilike: $_ilike } }, limit: 20) {
+        query get_ingredients {
+          ingredients {
             name
             id
           }
         }
       `,
-      variables() {
-        // Use vue reactive properties here
-        return {
-          _ilike: "%" + this.name + "%",
-        };
-      },
     },
   },
 };
