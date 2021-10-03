@@ -1,7 +1,6 @@
 <template>
   <div>
     <b-autocomplete
-      rounded
       v-model="name"
       ref="autocomplete"
       :data="filteredDataArray"
@@ -75,7 +74,6 @@ export default {
         confirmText: "Add",
         onConfirm: (value) => {
           this.addIngredientToBackend(value);
-          this.$refs.autocomplete.setSelected(value);
         },
       });
     },
@@ -87,11 +85,7 @@ export default {
         },
         refetchQueries: ["get_ingredients"],
         update: (cache, { data: { insert_ingredients_one } }) => {
-          // Read the data from our cache for this query.
-
-          // eslint-disable-next-line
-          console.log("insert_ingredient");
-          console.log(insert_ingredients_one);
+          this.$refs.autocomplete.setSelected(insert_ingredients_one);
         },
       });
     },

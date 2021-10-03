@@ -42,17 +42,26 @@
       >
         <span class="level">
           <span class="level-left">
-            <b-numberinput
-              v-bind:style="{ marginBottom: 0, width: '10em' }"
+            <b-input
+              v-bind:style="{
+                width: '5em',
+              }"
               class="level-item"
-              controls-position="compact"
-              controls-alignment="left"
-              min="0"
-              native-size="10"
               v-model="ingredient.amount"
-            ></b-numberinput>
+            ></b-input>
 
-            <span class="level-item">{{ ingredient.name }}</span>
+            <b-select class="level-item" v-model="ingredient.unit">
+              <option v-for="unit in units" :value="unit.id" :key="unit.id">
+                {{ unit.name }}
+              </option>
+            </b-select>
+
+            <b-input
+              class="level-item"
+              custom-class="is-static"
+              v-model="ingredient.name"
+              readonly
+            ></b-input>
           </span>
           <span class="level-right">
             <span class="level-item">
@@ -67,11 +76,28 @@
         </span>
       </a>
 
-      <div class="panel-block">
-        <ingredient-selector
-          v-bind:selectFunction="addNewIngredient"
-        ></ingredient-selector>
-      </div>
+      <a class="panel-block">
+        <span class="level">
+          <span class="level-left">
+            <b-input
+              class="level-item"
+              v-bind:style="{ width: '5em' }"
+              ref="nextAmount"
+              v-model="nextIngredient.amount"
+            ></b-input>
+
+            <b-select class="level-item" v-model="nextIngredient.unit">
+              <option v-for="unit in units" :value="unit.id" :key="unit.id">
+                {{ unit.name }}
+              </option>
+            </b-select>
+            <ingredient-selector
+              class="level-item"
+              v-bind:selectFunction="addNewIngredient"
+            ></ingredient-selector>
+          </span>
+        </span>
+      </a>
     </nav>
 
     <button class="button">Primary</button>
@@ -89,15 +115,24 @@ export default {
       description: "",
       bild: "",
       ingredients: [],
-      newIngredient: "",
-      nextIngredientId: 1,
+      nextIngredient: { amount: 1, unit: 1 },
+      units: [
+        { id: 1, name: "Gramm" },
+        { id: 2, name: "Stück" },
+        { id: 3, name: "Kilo" },
+        { id: 4, name: "Teelöffel" },
+      ],
     };
   },
   methods: {
     addNewIngredient(i) {
       if (i && !this.ingredients.includes(i)) {
-        i.amount = 1;
+        i.amount = this.nextIngredient.amount;
+        i.unit = this.nextIngredient.unit;
         this.ingredients.push(i);
+        this.nextIngredient = { amount: 1, unit: 1 };
+        this.$refs.nextAmount.focus();
+        this.$refs.nextAmount.$refs.input.select();
       }
     },
     removeIngredient(i) {
