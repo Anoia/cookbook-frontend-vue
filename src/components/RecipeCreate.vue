@@ -5,7 +5,7 @@
     <div class="columns level">
       <div class="column level-item">
         <b-field label="Title">
-          <b-input placeholder="e.g. Lasagna"></b-input>
+          <b-input placeholder="e.g. Lasagna" v-model="title"></b-input>
         </b-field>
 
         <b-field label="Decription">
@@ -14,6 +14,7 @@
             maxlength="200"
             :has-counter="true"
             type="textarea"
+            v-model="description"
           ></b-input>
         </b-field>
       </div>
@@ -52,7 +53,7 @@
 
             <b-select class="level-item" v-model="ingredient.unit">
               <option v-for="unit in units" :value="unit.id" :key="unit.id">
-                {{ unit.name }}
+                {{ unit.long_name }}
               </option>
             </b-select>
 
@@ -88,7 +89,7 @@
 
             <b-select class="level-item" v-model="nextIngredient.unit">
               <option v-for="unit in units" :value="unit.id" :key="unit.id">
-                {{ unit.name }}
+                {{ unit.long_name }}
               </option>
             </b-select>
             <ingredient-selector
@@ -100,12 +101,55 @@
       </a>
     </nav>
 
-    <button class="button">Primary</button>
+    <section v-for="step in stepsWithIndex" v-bind:key="step.id">
+      <b-field :label="'Step ' + step.id" label-position="on-border">
+        <b-input
+          maxlength="400"
+          type="textarea"
+          v-model="step.content"
+          placeholder="Add instructions.."
+          @blur="handleStepChanged"
+          @input="handleStepChanged"
+        ></b-input>
+      </b-field>
+    </section>
+
+    <b-button type="is-primary" @click="save">Save</b-button>
   </section>
 </template>
 
 <script>
+import gql from "graphql-tag";
 import IngredientSelector from "../components/IngredientSelector.vue";
+
+const CREATE_RECIPE = gql`
+  mutation create_recipe(
+    $description: String
+    $name: String
+    $steps: jsonb
+    $data: [recipe_ingredients_insert_input!]!
+  ) {
+    insert_recipes_one(
+      object: {
+        description: $description
+        name: $name
+        steps: $steps
+        recipe_ingredients: { data: $data }
+      }
+    ) {
+      id
+      description
+      name
+      steps
+      recipe_ingredients {
+        amount
+        ingredient_id
+        unit
+      }
+    }
+  }
+`;
+
 export default {
   components: { IngredientSelector },
   name: "RecipeCreate",
@@ -114,17 +158,29 @@ export default {
       title: "",
       description: "",
       bild: "",
+      steps: [{ content: "" }],
       ingredients: [],
       nextIngredient: { amount: 1, unit: 1 },
-      units: [
-        { id: 1, name: "Gramm" },
-        { id: 2, name: "Stück" },
-        { id: 3, name: "Kilo" },
-        { id: 4, name: "Teelöffel" },
-      ],
+      units: [],
     };
   },
+  computed: {
+    stepsWithIndex() {
+      var i = 1;
+      var newSteps = [];
+      for (var step of this.steps) {
+        step.id = i++;
+        newSteps.push(step);
+      }
+      return newSteps;
+    },
+  },
   methods: {
+    handleStepChanged() {
+      if (this.steps[this.steps.length - 1].content.trim() != "") {
+        this.steps.push({ content: "" });
+      }
+    },
     addNewIngredient(i) {
       if (i && !this.ingredients.includes(i)) {
         i.amount = this.nextIngredient.amount;
@@ -139,6 +195,42 @@ export default {
       if (i && this.ingredients.includes(i)) {
         this.ingredients.splice(this.ingredients.indexOf(i), 1);
       }
+    },
+    save() {
+      console.log(this.ingredients);
+      var updatedIngredients = [];
+      for (var i of this.ingredients) {
+        var newI = { amount: i.amount, unit: i.unit, ingredient_id: i.id };
+        updatedIngredients.push(newI);
+      }
+
+      var variables = {
+        description: this.description,
+        name: this.title,
+        steps: this.steps,
+        data: updatedIngredients,
+      };
+      console.log(variables);
+      this.$apollo.mutate({
+        mutation: CREATE_RECIPE,
+        variables: variables,
+        update: (cache, { data: { insert_recipes_one } }) => {
+          console.log(insert_recipes_one);
+        },
+      });
+    },
+  },
+  apollo: {
+    units: {
+      query: gql`
+        query get_units {
+          units {
+            id
+            long_name
+            short_name
+          }
+        }
+      `,
     },
   },
 };
