@@ -13,7 +13,6 @@
           src="https://picsum.photos/600/400"
           alt="A random image"
           ratio="6by4"
-          :rounded="True"
         ></b-image>
         <nav class="panel is-primary block">
           <p class="panel-heading">Ingredients</p>

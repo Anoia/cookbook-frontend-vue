@@ -204,12 +204,22 @@ export default {
         updatedIngredients.push(newI);
       }
 
+      var stepId = 1;
+      var cleanedSteps = [];
+      for (var step of this.steps) {
+        if (step.content.trim() != "") {
+          step.id = stepId++;
+          cleanedSteps.push(step);
+        }
+      }
+
       var variables = {
         description: this.description,
         name: this.title,
-        steps: this.steps,
+        steps: cleanedSteps,
         data: updatedIngredients,
       };
+
       console.log(variables);
       this.$apollo.mutate({
         mutation: CREATE_RECIPE,
