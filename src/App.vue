@@ -23,6 +23,15 @@
         <router-view />
       </div>
     </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Cookbook</strong> by
+          <a href="https://github.com/anoia/">Anoia</a>.
+        </p>
+      </div>
+    </footer>
   </div>
 </template>
 
