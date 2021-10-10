@@ -8,7 +8,7 @@
           <b-input placeholder="e.g. Lasagna" v-model="title"></b-input>
         </b-field>
 
-        <b-field label="Decription">
+        <b-field label="Description">
           <b-input
             size="is-small"
             maxlength="200"
@@ -216,6 +216,10 @@ export default {
         variables: variables,
         update: (cache, { data: { insert_recipes_one } }) => {
           console.log(insert_recipes_one);
+          this.$router.push({
+            name: "recipe",
+            params: { id: insert_recipes_one.id },
+          });
         },
       });
     },

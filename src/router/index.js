@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Profile from "../views/Profile.vue";
+import ViewRecipe from "../views/ViewRecipe.vue";
 import { authGuard } from "../auth/authGuard";
 
 Vue.use(VueRouter);
@@ -28,13 +29,19 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/NewRecipe.vue"),
+      import(/* webpackChunkName: "newrecipe" */ "../views/NewRecipe.vue"),
   },
   {
     path: "/profile",
     name: "profile",
     component: Profile,
     beforeEnter: authGuard,
+  },
+  {
+    path: "/recipe/:id",
+    name: "recipe",
+    component: ViewRecipe,
+    props: true,
   },
 ];
 
