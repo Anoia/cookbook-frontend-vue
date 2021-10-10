@@ -1,16 +1,13 @@
 <template>
   <div class="home">
-    <ingredient-selector
-      v-bind:selectFunction="(option) => (selected = option)"
-    ></ingredient-selector>
-
-    <p>THE NEW ONE {{ selected }}</p>
     <img alt="Vue logo" src="../assets/logo.png" />
 
-    <h3>ingredient test</h3>
-    <div v-for="i in ingredients" :key="i.id">{{ i.id }} - {{ i.name }}</div>
+    <h3>recipe list test</h3>
+    <router-link v-for="r in recipes" :key="r.id" :to="'/recipe/' + r.id"
+      >{{ r.id }} - {{ r.name }}: {{ r.description }} <br
+    /></router-link>
 
-    <!-- Check that the SDK client is not currently loading before accessing is methods -->
+    <!-- Check that the SDK client is not currently loading before accessing it's methods -->
     <div v-if="!$auth.loading">
       <p>auth loaded</p>
       <!-- show login when not authenticated -->
@@ -28,10 +25,8 @@
 <script>
 import gql from "graphql-tag";
 import { onLogin, onLogout } from "../vue-apollo";
-import IngredientSelector from "../components/IngredientSelector.vue";
 
 export default {
-  components: { IngredientSelector },
   name: "Home",
   data() {
     return {
@@ -59,11 +54,12 @@ export default {
   },
   apollo: {
     // Simple query that will update the 'ingredients' vue property
-    ingredients: gql`
+    recipes: gql`
       query {
-        ingredients {
-          name
+        recipes {
+          description
           id
+          name
         }
       }
     `,
