@@ -12,9 +12,7 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "apollo-token";
 
 // Http endpoint
-const httpEndpoint =
-  process.env.VUE_APP_GRAPHQL_HTTP ||
-  "https://crucial-blowfish-99.hasura.app/v1/graphql";
+const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP;
 
 // Config
 const defaultOptions = {
@@ -23,8 +21,7 @@ const defaultOptions = {
   // You can use `wss` for secure connection (recommended in production)
   // Use `null` to disable subscriptions
   wsEndpoint:
-    process.env.VUE_APP_GRAPHQL_WS ||
-    "ws://crucial-blowfish-99.hasura.app/v1/graphql",
+    process.env.VUE_APP_GRAPHQL_WS,
   // LocalStorage token
   tokenName: AUTH_TOKEN,
   // Enable Automatic Query persisting with Apollo Engine
