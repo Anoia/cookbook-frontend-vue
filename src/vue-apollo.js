@@ -32,6 +32,10 @@ const defaultOptions = {
   // Is being rendered on the server?
   ssr: false,
 
+  httpLinkOptions: {
+    uri: process.env.VUE_APP_GRAPHQL_HTTP,
+  },
+
   // Override default apollo link
   // note: don't override httpLink here, specify httpLink options in the
   // httpLinkOptions property of defaultOptions.
