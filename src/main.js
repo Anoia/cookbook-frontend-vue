@@ -4,9 +4,13 @@ import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 import "bulmaswatch/flatly/bulmaswatch.min.css";
 import router from "./router";
-import { domain, clientId, audience } from "../auth_config.json";
 import { Auth0Plugin } from "./auth";
 import { createProvider } from "./vue-apollo";
+
+
+var domain = process.env.VUE_APP_AUTH_DOMAIN;
+var clientId = process.env.VUE_APP_AUTH_CLIENT_ID;
+var audience = process.env.VUE_APP_AUTH_AUDIENCE;
 
 Vue.config.productionTip = false;
 
