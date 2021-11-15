@@ -5,7 +5,51 @@ import "buefy/dist/buefy.css";
 import "bulmaswatch/flatly/bulmaswatch.min.css";
 import router from "./router";
 import { Auth0Plugin } from "./auth";
-import { createProvider } from "./vue-apollo";
+// import { createProvider } from "./vue-apollo";
+
+import { ApolloClient } from 'apollo-client'
+import { HttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+
+console.log('TEST THE ENV VAR', process.env.VUE_APP_GRAPHQL_HTTP)
+
+const getHeaders = () => {
+  const headers = {};
+  const token = window.localStorage.getItem('apollo-token');
+  if (token) {
+    headers.authorization = `Bearer ${token}`;
+  }
+  return headers;
+};
+
+
+
+// HTTP connection to the API
+const httpLink = new HttpLink({
+  uri: process.env.VUE_APP_GRAPHQL_HTTP,
+  fetch,
+  headers: getHeaders()
+});
+
+// Cache implementation
+const cache = new InMemoryCache({ addTypename: true })
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  link: httpLink,
+  cache,
+  uri: process.env.VUE_APP_GRAPHQL_HTTP,
+})
+
+console.log('appollo client test', apolloClient)
+
+import VueApollo from 'vue-apollo'
+
+Vue.use(VueApollo)
+
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+})
 
 
 var domain = process.env.VUE_APP_AUTH_DOMAIN;
@@ -36,6 +80,6 @@ Vue.use(Buefy, {
 
 new Vue({
   router,
-  apolloProvider: createProvider(),
+  apolloProvider: apolloProvider,
   render: (h) => h(App),
 }).$mount("#app");
